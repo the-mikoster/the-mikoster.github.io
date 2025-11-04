@@ -3,9 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>It's just a website</title>
+    <meta name="description" content="Personal website with links to social profiles and projects">
+    <meta name="theme-color" content="#000000">
+    
+    <title>It`s just a website</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=VT323&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/components/themes.css">
+    <link rel="stylesheet" href="css/components/background.css">
 </head>
 <body>
-    <p>Expect the first version of the site by <strong>31.10.2025</strong></p>
+    <div class="background-wrapper">
+        <div class="background"></div>
+    </div>
+
+    <div class="page-wrapper">
+        <main class="page">
+            <section class="page__section">
+
+            </section>
+
+            <section class="page__section">
+                <nav class="links">
+                    <a href="https://github.com/morukek" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="links__item"
+                       aria-label="Visit my GitHub profile">
+                        <img class="links__icon" src="https://www.google.com/s2/favicons?sz=64&domain=github.com" alt="GitHub favicon" width="24" height="24">
+                        <span class="links__text">ME ON GITHUB</span>
+                    </a>
+
+                    <a href="/hub" 
+                       class="links__item"
+                       aria-label="Visit my hub">
+                        <span class="links__text">MY HUB</span>
+                    </a>
+
+                    <a href="mailto:your.email@example.com" 
+                       class="links__item"
+                       aria-label="Send me an email">
+                        <img class="links__icon" src="https://www.google.com/s2/favicons?sz=64&domain=mail.ru" alt="Mail icon" width="24" height="24">  
+                        <span class="links__text">SEND ME MAIL</span>
+                    </a>
+
+                    <a href="https://twitch.tv/mikoster" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="links__item"
+                       aria-label="Visit my Twitch channel">
+                        <img class="links__icon" src="https://www.google.com/s2/favicons?sz=64&domain=twitch.tv" alt="Twitch favicon" width="24" height="24">  
+                        <span class="links__text">TWITCH CHANNEL</span>
+                    </a>
+
+                    <a href="https://steamcommunity.com/id/the-mikoster" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="links__item"
+                       aria-label="Visit my Steam profile">
+                        <img class="links__icon" src="https://www.google.com/s2/favicons?sz=64&domain=steamcommunity.com" alt="Steam favicon" width="24" height="24">    
+                        <span class="links__text">YEAH, STEAM</span>
+                    </a>
+                </nav>
+            </section>
+
+            <section class="page__section">
+
+            </section>
+        </main>
+    </div>
+
+    <div class="overlay-wrapper hidden"></div>
+
+    <script type="module" src="js/script.js"></script>
 </body>
 </html>

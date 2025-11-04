@@ -1,0 +1,8 @@
+[data-theme="default"] {
+  --color-text: #e3e3e3;
+  --color-surface: rgba(30, 30, 30, 0.6);
+  --color-primary: #00bcd4;
+  --color-secondary: #607d8b;
+  --color-background: #121212;
+  --color-border: #2d2d2d;
+}
