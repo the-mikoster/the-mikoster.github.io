@@ -1,3 +1,21 @@
+.background-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-background-wrapper);
+}
+
+.background {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  
+}
+
+.background {
+  background-color: var(--color-background);
+  z-index: 0;
+}
+
 .background__canvas, .background__image, .background__video {
   position: absolute;
   inset: 0;

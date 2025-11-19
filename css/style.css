@@ -7,23 +7,45 @@ body {
   font-family: var(--font-family-base);
 }
 
-/* Layout */
-.background-wrapper {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-background-wrapper);
+p {
+  color: var(--color-text);
 }
 
-.background {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background-color: var(--color-background);
+p, a {
+  font-family: var(--font-family-base);
 }
 
+a {
+  cursor: pointer;
+  transition: color var(--transition);
+}
+
+a:link, a:visited {
+  text-decoration: none;
+  color: var(--color-secondary);
+}
+
+a:hover, a:active {
+  color: var(--color-primary);
+}
+
+.container {
+  background-color: var(--color-surface);
+  backdrop-filter: var(--backdrop-blur-container);
+  border: var(--border-container);
+  border-radius: var(--border-radius-container);
+
+  transition: background-color var(--transition),
+              backdrop-filter var(--transition)
+              border var(--transition)
+              border-radius var(--transition);
+}
+
+/* Page */
 .page-wrapper {
   position: absolute;
   inset: 0;
+  z-index: var(--z-page-wrapper);
 }
 
 .page {
@@ -40,17 +62,12 @@ body {
 
 .page__section { }
 
-.overlay-wrapper {
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-overlay-wrapper);
-}
+/* page section top */
+.page__section--top { }
 
-.overlay-wrapper.hidden {
-  display: none;
-}
+/* page section center */
+.page__section--center { }
 
-/* Links container */
 .links {
   display: flex;
   flex-direction: column;
@@ -60,43 +77,16 @@ body {
   gap: var(--space-lg);
 }
 
+
 .links__item {
   position: relative;
-  display: inline-block;
   padding: var(--space-md);
-  background-color: var(--color-surface);
-  backdrop-filter: var(--blur);
-  border: var(--border);
-  border-radius: var(--border-radius);
   cursor: pointer;
-  transition: all var(--transition);
-  text-decoration: none;
-}
-
-.links__icon {
-  position: absolute;
-  left: 1em;
-  top: 50%;
-  transform: translateY(-50%);
-  width: var(--font-size-xl);
-  height: var(--font-size-xl);
-  fill: var(--color-text);
-  transition: fill var(--transition);
-}
-
-.links__text {
-  display: block;
-  text-align: center;
-  font-family: var(--font-family-mono);
-  font-size: var(--font-size-2xl);
-  color: var(--color-text);
-  margin: 0;
-  transition: color var(--transition);
+  transition: border var(--transition), transform var(--transition);
 }
 
 .links__item:hover,
 .links__item:focus {
-  text-decoration: none;
   outline: none;
   border-color: var(--color-primary);
   transform: scale(1.05);
@@ -107,22 +97,61 @@ body {
   border-color: var(--color-primary);
 }
 
-.links__item:hover .links__icon,
-.links__item:focus .links__icon {
+.links__item-icon {
+  position: absolute;
+  left: var(--space-md);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--font-size-xl);
+  height: var(--font-size-xl);
+  fill: var(--color-text);
+  transition: fill var(--transition);
+}
+
+.links__item:hover .links__item-icon,
+.links__item:focus .links__item-icon {
   fill: var(--color-primary);
 }
 
-.links__item:focus-visible .links__icon {
-  fill: var(--color-primary);
+.links__item-label {
+  text-align: center;
+  font-family: var(--font-family-links);
+  font-size: var(--font-size-2xl);
+  text-decoration: none;
 }
 
-.links__item:hover .links__text,
-.links__item:focus .links__text {
+.links__item:link .links__item-label, .links__item:visited .links__item-label {
+  color: var(--color-text);
+}
+
+.links__item:hover .links__item-label,
+.links__item:focus .links__item-label {
+  text-decoration: none;
   color: var(--color-primary);
 }
 
-.links__item:focus-visible .links__text {
+.links__item:focus-visible .links__item-label {
   color: var(--color-primary);
+}
+
+/* page section bottom */
+.page__section--bottom { 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+} 
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-xl);
+  padding: var(--space-md) 0;
+}
+
+.copy, .theme-selector, .theme-selector__options-list {
+  padding: var(--space-sm);
+  font-size: var(--font-size-sm);
 }
 
 /* Media */

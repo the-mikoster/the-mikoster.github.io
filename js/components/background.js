@@ -10,51 +10,43 @@ export class Background {
     }
 
     setBackground(background) {
+        let outputBackgroundElem = undefined;
         switch (background.type) {
             case 'canvas':
-                return this.setCanvas(this.backgroundElem, background.init);
+                outputBackgroundElem = this.setCanvas();
+                break;
             case 'image':
-                return this.setImage(this.backgroundElem, background.src);
+                outputBackgroundElem = this.setImage(background.src);
+                break;
             case 'video':
-                return this.setVideo(this.backgroundElem, background.src);
+                outputBackgroundElem = this.setVideo(background.src);
+                break;
             default:
                 console.warn('Unknown background type:', background && background.type);
-                return null;
+                outputBackgroundElem =  null;
         }
+        
+        return outputBackgroundElem;
     }
 
-    setCanvas(parentElem, initCallback) {
+    setCanvas() {
         const canvas = document.createElement('canvas');
         canvas.classList.add('background__canvas');
-
-        parentElem.appendChild(canvas);
-
-        if (typeof initCallback === 'function') {
-            try {
-                return initCallback(canvas) || null;
-            } catch (err) {
-                console.error('BackgroundManager.setCanvas: initCallback error', err);
-                return null;
-            }
-        }
-        return null;
+        
+        this.backgroundElem.appendChild(canvas);
     }
 
-    setImage(parentElem, src) {
+    setImage(src) {
         const img = document.createElement('img');
         img.classList.add('background__image');
 
         img.src = src || '';
         img.alt = 'Background image';
 
-        parentElem.appendChild(img);
-    
-        return () => {
-            try { img.remove(); } catch (e) {}
-        };
+        this.backgroundElem.appendChild(img);
     }
 
-    setVideo(parentElem, src) {
+    setVideo(src) {
         const video = document.createElement('video');
         video.classList.add('background__video');
 
@@ -64,9 +56,6 @@ export class Background {
         video.muted = true;
         video.playsInline = true;
 
-        parentElem.appendChild(video);
-        return () => {
-            try { video.pause(); video.remove(); } catch (e) {}
-        };
+        this.backgroundElem.appendChild(video);
     }
 }
