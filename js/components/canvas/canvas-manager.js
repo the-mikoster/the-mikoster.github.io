@@ -67,7 +67,7 @@ export class CanvasManager {
         const dpr = window.devicePixelRatio || 1; // for Retina/High DPI displays
 
         // Real size
-        this.canvas.width = window.innerWidth * dpr;
+        this.canvas.width = document.documentElement.clientWidth * dpr;
         this.canvas.height = window.innerHeight * dpr;
 
         // Visual size (css)

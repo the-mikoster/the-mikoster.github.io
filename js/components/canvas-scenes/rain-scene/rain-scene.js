@@ -44,4 +44,12 @@ export class RainScene extends BaseScene {
 
         ctx.stroke();
     }
+
+    resize(width, height) {
+        super.resize(width, height); 
+
+        this.drops.forEach(drop => {
+            drop.x = Math.random() * this.width;
+        });
+    }
 }
