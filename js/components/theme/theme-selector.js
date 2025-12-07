@@ -1,16 +1,18 @@
 export class ThemeSelector {
-    constructor(themes, themeSelectorElems, themeSelectorClassNames) {
+    constructor(themes, elements, classNames) {
         this.themes = themes;
 
-        this.currentOptionElem = themeSelectorElems.currentOption;
-        this.currentOptionLabelElem = themeSelectorElems.currentOptionLabel;
-        this.optionsListElem = themeSelectorElems.optionsList;
+        this.currentOptionElem = elements.currentOption;
+        this.currentOptionLabelElem = elements.currentOptionLabel;
+        this.optionsListElem = elements.optionsList;
 
-        this.activeElemClassName = themeSelectorClassNames.active;
-        this.hiddenElemClassName = themeSelectorClassNames.hidden;
-        this.optionElemClassName = themeSelectorClassNames.option;
-        this.optionLabelElemClassName = themeSelectorClassNames.optionLabel;
-        this.optionIconElemClassName = themeSelectorClassNames.optionIcon;
+        this.activeElemClassName = classNames.active;
+        this.hiddenElemClassName = classNames.hidden;
+        this.optionElemClassName = classNames.option;
+        this.optionLabelElemClassName = classNames.optionLabel;
+        this.optionIconElemClassName = classNames.optionIcon;
+
+        this.animationDuration = 200;
     }
 
     addOptionsInList(themes) {
@@ -45,7 +47,7 @@ export class ThemeSelector {
         setTimeout(() => {
             this.currentOptionLabelElem.textContent = themeName;
             this.currentOptionElem.classList.remove(this.hiddenElemClassName);
-        }, 200);
+        }, this.animationDuration);
 
         const options = this.optionsListElem.querySelectorAll(`.${this.optionElemClassName}`);
         options.forEach(option => {
@@ -80,24 +82,30 @@ export class ThemeSelector {
         });
     }
 
-    themeChangeHandler(onThemeSelected) {
-        const options = this.optionsListElem.querySelectorAll(`.${this.optionElemClassName}`);
-        
-        options.forEach(option => {
-            option.addEventListener('click', () => {
+    addThemeChangeHandler(onThemeSelected) {
+        this.optionsListElem.addEventListener('click', (e) => { 
+            const option = e.target.closest(`.${this.optionElemClassName}`);
+
+            if (option) {
                 const themeKey = option.dataset.themeKey;
                 const themeName = this.themes[themeKey].name;
+
+                if (option.classList.contains(this.activeElemClassName)) {
+                    return;
+                }
                 
                 this.toggleCurrentOption(themeName);
 
                 setTimeout(() => { 
                     this.closeOptionsList(); 
-                }, 200);
+                }, this.animationDuration);
 
                 if (typeof onThemeSelected === 'function') {
                     onThemeSelected(themeKey);
                 }
-            });
+            } else {
+                return;
+            }
         });
     }
 }

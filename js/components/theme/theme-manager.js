@@ -1,23 +1,12 @@
 export class ThemeManager {
-    constructor(themes, backgroundInstance, themeSelectorInstance) {
+    constructor(themes,backgroundInstance,themeSelectorInstance) {
         this.themes = themes;
         this.backgroundInstance = backgroundInstance;
         this.themeSelectorInstance = themeSelectorInstance;
         this.cleanupFunctions = [];
-
-        this.apply = this.apply.bind(this);
     }
 
-    init() {
-        const currentThemeKeyName = localStorage.getItem('Theme') || String(Object.keys(this.themes)[0]);
-        this.apply(currentThemeKeyName);
-        this.themeSelectorInstance.addOptionsInList(this.themes);
-        this.themeSelectorInstance.toggleCurrentOption(this.themes[currentThemeKeyName].name);
-        this.themeSelectorInstance.optionListToggleListener();
-        this.themeSelectorInstance.themeChangeHandler(this.apply);
-    }
-
-    apply(currentThemeKeyName) {
+    apply = (currentThemeKeyName) => {
         if (!this.themes[currentThemeKeyName]) return;
 
         this.runCleanup();
@@ -41,12 +30,20 @@ export class ThemeManager {
         window.dispatchEvent(themeEvent);
     }
 
+    init() {
+        const currentThemeKeyName = localStorage.getItem('Theme') || String(Object.keys(this.themes)[0]);
+        this.apply(currentThemeKeyName);
+        this.themeSelectorInstance.addOptionsInList(this.themes);
+        this.themeSelectorInstance.toggleCurrentOption(this.themes[currentThemeKeyName].name);
+        this.themeSelectorInstance.optionListToggleListener();
+        this.themeSelectorInstance.addThemeChangeHandler(this.apply);
+    }
+
     applyThemeData(themeName) {
         document.documentElement.setAttribute('data-theme', themeName);
     }
 
     applyThemeBackground(themeBackground) {
-        this.backgroundInstance.clearBackground();
         this.backgroundInstance.setBackground(themeBackground);
     }
 

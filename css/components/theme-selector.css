@@ -35,7 +35,7 @@
   transition: color var(--transition), opacity var(--transition);
 }
 
-.theme-selector__current-option:hover .theme-selector__current-option-label {
+.theme-selector__current-option:hover .theme-selector__current-option-label, .theme-selector__current-option:focus-visible .theme-selector__current-option-label {
   color: var(--color-primary);
 }
 
@@ -52,7 +52,7 @@
   transition: transform var(--transition);
 }
 
-.theme-selector__current-option:hover .theme-selector__current-option-icon {
+.theme-selector__current-option:hover .theme-selector__current-option-icon, .theme-selector__current-option:focus-visible .theme-selector__current-option-icon {
   fill: var(--color-primary);
 }
 

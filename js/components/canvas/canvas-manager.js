@@ -7,10 +7,44 @@ export class CanvasManager {
         this.animationId = null;
         this.lastTime = 0;
 
-        this.resize = this.resize.bind(this);
-        this.loop = this.loop.bind(this);
-
         this.init();
+    }
+
+    resize = () => {
+        const dpr = window.devicePixelRatio || 1; // for Retina/High DPI displays
+
+        // Real size
+        this.canvas.width = document.documentElement.clientWidth * dpr;
+        this.canvas.height = window.innerHeight * dpr;
+
+        // Visual size (css)
+        this.canvas.style.width = `${window.innerWidth}px`;
+        this.canvas.style.height = `${window.innerHeight}px`;
+
+        this.ctx.scale(dpr, dpr);
+
+        if (this.currentScene && typeof this.currentScene.resize === 'function') {
+            this.currentScene.resize(window.innerWidth, window.innerHeight);
+        }
+    }
+
+    loop = (timestamp) => {
+        const deltaTime = (timestamp - this.lastTime) / 1000;
+        this.lastTime = timestamp;
+
+        if (this.currentScene) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            if (typeof this.currentScene.update === 'function') {
+                this.currentScene.update(deltaTime);
+            }
+
+            if (typeof this.currentScene.draw === 'function') {
+                this.currentScene.draw(this.ctx);
+            }
+        }
+
+        this.animationId = requestAnimationFrame(this.loop);
     }
 
     init() {
@@ -42,44 +76,7 @@ export class CanvasManager {
             cancelAnimationFrame(this.animationId);
             this.animationId = null;
         }
-    }
-
-    loop(timestamp) {
-        const deltaTime = (timestamp - this.lastTime) / 1000;
-        this.lastTime = timestamp;
-
-        if (this.currentScene) {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-            if (typeof this.currentScene.update === 'function') {
-                this.currentScene.update(deltaTime);
-            }
-
-            if (typeof this.currentScene.draw === 'function') {
-                this.currentScene.draw(this.ctx);
-            }
-        }
-
-        this.animationId = requestAnimationFrame(this.loop);
-    }
-
-    resize() {
-        const dpr = window.devicePixelRatio || 1; // for Retina/High DPI displays
-
-        // Real size
-        this.canvas.width = document.documentElement.clientWidth * dpr;
-        this.canvas.height = window.innerHeight * dpr;
-
-        // Visual size (css)
-        this.canvas.style.width = `${window.innerWidth}px`;
-        this.canvas.style.height = `${window.innerHeight}px`;
-
-        this.ctx.scale(dpr, dpr);
-
-        if (this.currentScene && typeof this.currentScene.resize === 'function') {
-            this.currentScene.resize(window.innerWidth, window.innerHeight);
-        }
-    }
+    }    
 
     destroy() {
         this.stop();
