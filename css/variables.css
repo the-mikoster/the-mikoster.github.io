@@ -21,11 +21,13 @@
   --font-size-xl: calc(var(--font-size-lg) * var(--font-scale-ratio));
   --font-size-2xl: calc(var(--font-size-xl) * var(--font-scale-ratio));
 
-  --transition: 0.2s ease;
+  --transition-duration: 0.2s;
+  --transition: var(--transition-duration) ease;
 
   --z-background-wrapper: -1;
   --z-page-wrapper: 1;
   --z-overlay-wrapper: 100;
+  --z-notifications-wrapper: 200;
 
   --backdrop-blur-container: none;
   --border-container: none;

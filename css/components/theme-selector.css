@@ -2,13 +2,14 @@
   width: var(--font-size-sm);
   height: var(--font-size-sm);
   margin-left: var(--space-xs);
-  transform: translateY(10%);
+  transform: translateY(15%);
   transition: fill var(--transition);
 }
 
 /*  */
 .theme-selector-wrapper {
   position: relative;
+  user-select: none;
 }
 
 .theme-selector {
@@ -58,7 +59,7 @@
 
 .theme-selector__current-option.active .theme-selector__current-option-icon {
   fill: var(--color-primary);
-  transform: translateY(10%) rotateX(0.5turn);
+  transform: translateY(15%) rotateX(0.5turn);
 }
 
 /*  */

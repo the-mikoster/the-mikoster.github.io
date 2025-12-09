@@ -1,7 +1,7 @@
 import { BaseScene } from '../../canvas/base-scene.js';
 
-export class RainScene extends BaseScene {
-    constructor(width, height, {dropCount = 100, color = '#e3e3e3'} = {}) {
+export class Scene extends BaseScene {
+    constructor(width, height, {dropCount = 100, color = getComputedStyle(document.documentElement).getPropertyValue('--color-primary')} = {}) {
         super(width, height);
         this.drops = [];
         this.dropCount = dropCount;

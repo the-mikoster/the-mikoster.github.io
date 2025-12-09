@@ -37,9 +37,10 @@ a:hover, a:active {
   box-shadow: 0px 0px 8px 2px var(--color-border);
 
   transition: background-color var(--transition),
-              backdrop-filter var(--transition)
-              border var(--transition)
-              border-radius var(--transition);
+              backdrop-filter var(--transition),
+              border var(--transition),
+              border-radius var(--transition),
+              box-shadow var(--transition);
 }
 
 /* Page */
@@ -76,6 +77,7 @@ a:hover, a:active {
   max-width: 480px;
   margin: 0 auto;
   gap: var(--space-lg);
+  user-select: none;
 }
 
 

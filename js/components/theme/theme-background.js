@@ -1,46 +1,86 @@
 export class ThemeBackground {
-    constructor(backgroundElem) {
+    constructor(backgroundElem, notificationManagerInstance) {
         this.backgroundElem = backgroundElem;
+        this.notificationManagerInstance = notificationManagerInstance;
+
+        this.currentNotification = null;
+
         this.currentLoadController = null;
         this.canvasManager = null;
     }
 
+    removeCurrentNotification() {
+        if (this.currentNotification) {
+            this.notificationManagerInstance.hideSingleMessage(this.currentNotification);
+            this.currentNotification = null;
+        }
+    }
+
     asyncLoad(type, src, signal) {
+        this.removeCurrentNotification();
+
+        this.currentNotification = this.notificationManagerInstance.showMessage(
+            'info',
+            'Background is loading...'
+        );
+
         return new Promise((resolve, reject) => {
-            switch (type) {
-                case 'image':
-                    const img = new Image();
+        switch (type) {
+            case 'image':
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => reject(new Error(`Error loading background image: ${src}`));
+                img.src = src;
 
-                    img.onload = () => resolve(img);
-                    img.onerror = () => reject(new Error(`Error loading background image: ${src}`));
+                break;
+            case 'video':
+                const video = document.createElement('video');
+                video.innerHTML = '<p>Your browser does not support video</p>';
+                video.preload = 'auto';
+                video.playsInline = true;
+                video.disableRemotePlayback = true;
+                video.controls = false;
+                video.autoplay = true;
+                video.loop = true;
+                video.muted = true;
 
-                    img.src = src;
+                video.onloadedmetadata = () => resolve(video);
+                video.onerror = () => reject(new Error(`Error loading background video: ${src}`));
+                video.src = src;
 
-                    break;
-                case 'video':
-                    const video = document.createElement('video');
-
-                    video.innerHTML = '<p>Your browser does not support video</p>';
-                    video.preload = 'auto';
-                    video.playsInline = true;
-                    video.disableRemotePlayback = true;
-                    video.controls = false;
-                    video.autoplay = true;
-                    video.loop = true;
-                    video.muted = true;
-
-                    video.onloadedmetadata = () => resolve(video);
-                    video.onerror = () => reject(new Error(`Error loading background video: ${src}`));
-
-                    video.src = src;
-
-                    break;
-                default:
-                    signal?.addEventListener('abort', () => {
-                        reject(new Error(`Background loading canceled: ${src}`));
+                break;
+            case 'canvas':
+                Promise.all([
+                    import(src.canvasManager),
+                    import(src.scene)
+                ])
+                    .then(([canvasManagerModule, sceneModule]) => {
+                    resolve({
+                        type: 'canvas',
+                        CanvasManager: canvasManagerModule.CanvasManager,
+                        Scene: sceneModule[src.sceneName || 'Scene'],
+                        config: src.config || {}
                     });
-                    reject(new Error(`Unsupported background type: ${type}`));
-            }
+                    })
+                    .catch(err => {
+                    reject(new Error(`Failed to load canvas modules: ${err.message}`));
+                    });
+
+                break;
+            default:
+                signal?.addEventListener('abort', () => {
+                    this.removeCurrentNotification();
+
+                    this.currentNotification = this.notificationManagerInstance.showMessage(
+                        'error',
+                        `Unsupported background type: ${type}`
+                    );
+
+                    reject(new Error(`Background loading canceled: ${src}`));
+                });
+
+                reject(new Error(`Unsupported background type: ${type}`));
+        }
         });
     }
 
@@ -67,20 +107,41 @@ export class ThemeBackground {
 
         this.clearBackground();
 
-        switch (background.type) {
+        try {
+            let result;
+            switch (background.type) {
             case 'canvas':
-                return await this.setCanvasAnimation(background.sources, background.sceneConfig);
+                result = await this.setCanvasAnimation(background.sources, background.sceneConfig);
+                break;
             case 'image':
-                return await this.setImage(background.src);
+                result = await this.setImage(background.src);
+                break;
             case 'video':
-                return await this.setVideo(background.src);
+                result = await this.setVideo(background.src);
+                break;
             default:
                 console.warn('Unknown background type:', background?.type);
-                return null;
+                result = null;
+            }
+
+            this.removeCurrentNotification();
+
+            return result;
+        } catch (error) {
+            console.error('Background load failed:', error);
+
+            this.removeCurrentNotification();
+
+            this.currentNotification = this.notificationManagerInstance.showMessage(
+                'error',
+                `Failed to load background`
+            );
+
+            throw error;
         }
     }
 
-    async setCanvasAnimation(sources = {},sceneConfig = {}) {
+    async setCanvasAnimation(sources = {}, sceneConfig = {}) {
         const canvas = document.createElement('canvas');
         canvas.classList.add('background__canvas');
         this.backgroundElem.appendChild(canvas);
@@ -89,16 +150,15 @@ export class ThemeBackground {
             if (!sources.canvasManager) throw new Error('CanvasManager path is not defined in sources');
             if (!sources.scene) throw new Error('Scene path is not defined in sources');
 
-            const { CanvasManager } = await import(sources.canvasManager);
-            const { RainScene } = await import(sources.scene);
-
-            this.canvasManager = new CanvasManager(canvas);
-            
-            this.canvasManager.setScene(RainScene, {
-                dropCount: sceneConfig.dropCount || 450,
-                color: sceneConfig.color || getComputedStyle(document.documentElement)
-                    .getPropertyValue('--color-primary') || '#0000ff'
+            const canvasData = await this.asyncLoad('canvas', {
+                canvasManager: sources.canvasManager,
+                scene: sources.scene,
+                sceneName: sources.sceneName,
+                config: sceneConfig
             });
+
+            this.canvasManager = new canvasData.CanvasManager(canvas);
+            this.canvasManager.setScene(canvasData.Scene, canvasData.config);
 
             await this.canvasManager.start();
 
